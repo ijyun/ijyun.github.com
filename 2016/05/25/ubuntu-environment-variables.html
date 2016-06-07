@@ -1,0 +1,342 @@
+﻿<!DOCTYPE html>
+<!--[if IE 8 ]><html class="ie ie8" lang="zh"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="zh">
+<!--<![endif]-->
+	<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="author" content="龙井">
+
+
+        <title>雨前龙井 - Linux环境变量</title>
+
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="/theme/css/style.css">
+
+        <!-- Custom CSS -->
+        	<link rel="stylesheet" href="/theme/css/colors/blue.css" id="colors">
+
+        <!-- Code highlight color scheme -->
+            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+
+        <meta name="tags" contents="Linux" />
+        <meta name="tags" contents="Ubuntu" />
+        <meta name="tags" contents="环境变量" />
+        <meta name="tags" contents="Jenkins" />
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="雨前龙井">
+
+	<meta property="og:type" content="article">
+	<meta property="article:author" content="">
+	<meta property="og:url" content="/2016/05/25/ubuntu-environment-variables.html">
+	<meta property="og:title" content="Linux环境变量">
+	<meta property="og:description" content="">
+	   <meta property="og:image" content="/images/guilherme-toti.jpg">
+	<meta property="article:published_time" content="2016-05-25 20:40:00+08:00">
+	</head>
+	<body>
+		<header id="header">
+			<!-- Container -->
+			<div class="container">
+				<!-- Logo / Mobile Menu -->
+				<div class="three columns">
+					<div id="logo">
+						<h1><a href="/">雨前龙井</a></h1>
+					</div>
+				</div>
+				<!-- Navigation
+				================================================== -->
+				<div class="thirteen columns">
+					
+					<nav id="navigation" class="menu">
+						<ul id="responsive">
+
+							<li><a href="/">Home</a></li>
+
+
+							        <li><a href="/pages/about-longjing.html">Author</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+			<!-- Container / End -->
+		</header>
+		<!-- Header / End -->
+		
+		<div id="content-wrapper">
+			<section id="titlebar">
+				<!-- Container -->
+				<div class="container">
+					<div class="sixteen columns">						
+						<nav id="breadcrumbs">
+							<ul>
+								<li>You are here:</li>
+								<li><a href="/">Home</a></li>
+<li><a href="/category/Linux">Linux</a></li>
+<li>Linux环境变量</li>
+							</ul>
+						</nav>
+					</div>
+
+				</div>
+				<!-- Container / End -->
+			</section>
+
+			<div class="container">
+	<div class="twelve alt columns">
+<article class="post" style="margin: 0; border: 0;">
+	
+	<div class="post-format">
+		<div class="circle"><i class="icon-pencil"></i><span></span></div>
+	</div>
+
+	<section class="post-content">
+
+		<header class="meta">
+			<h2><a href="/2016/05/25/ubuntu-environment-variables.html">Linux环境变量</a></h2>
+			<ul>
+				<li>By <a href="/author/long-jing.html">龙井</a></li>
+				<li>Wed 25 May 2016</li>
+				    <li>Updated on Wed 25 May 2016</li>
+			</ul>
+		</header>
+
+		<h3>简介</h3>
+<p>环境变量提供了一种在系统上改变软件行为的方式，比如，环境变量“LANG”决定了软件程序和用户交互的语言类型、
+环境变量以Key-Value的形式存在，比如在美国的操作系统中，我们一般设置“LANG”变量的值为“en_US.UTF-8”
+这意味着环境变量以及其值得格式都有使用环境变量的应用程序决定</p>
+<h4>修改环境变量和值</h4>
+<p>很多图形化系统配置工具实际上也是在后台修改环境变量，通过命令行的方式可以更方便的修改环境变量。Ubuntu上的默认命令行工具Shell包括sh、ksh和bash，命令的格式可能和其他shell有差异，比如和csh。</p>
+<h4>为环境变量赋值</h4>
+<p>如果环境变量存在，则直接赋值，如：LANG=he_IL.UTF-8
+如果环境变量不存在，直接赋值时，会生成一个shell变量(non-exported shell variables)，其不是环境变量，并不影响其他应用的行为。如果需要将其转换为环境变量，可以使用export命令，比如：</p>
+<ol>
+<li>先赋值，创建shell变量：EDITOR=nano</li>
+<li>在转换为环境变量：export EDITOR</li>
+</ol>
+<p>简化的创建一个新的环境变量的方式：export EDITOR=nano</p>
+<h4>查看环境变量</h4>
+<p>printenv：点引出当前所有已经定义的环境变量，比如要查看一个特定的环境变量，可以直接printenv PATH或者echo $PATH，env命令也可以用于查看环境变量</p>
+<p>美元符加上环境变量的Key可以代表Value，比如$PATH代表具体的值。可以和其他字符串联合使用，比如ls $HOME/desktop</p>
+<p>如果要查看所有的环境变量和Shell变量，可以使用命令：( set -o posix ; set ) | less</p>
+<h4>清除环境变量</h4>
+<p>将环境变量值设为空：export LC_ALL=</p>
+<p>彻底的清除环境变量：unset LC_ALL</p>
+<p>将环境变量转换为Shell变量：export -n LC_ALL</p>
+<h3>环境变量的运行原理</h3>
+<h4>进程局部</h4>
+<p>环境变量的值是局部的，也就是说环境变量的值是为特定的进程服务的。如果我们打开两个终端窗口（将会有两个终端进程），当在其中一个终端窗口中修改环境变量的值时，另一个终端窗口中的环境变量是不会变化的。</p>
+<h4>继承</h4>
+<p>当父进程启动一个子进程是，子进程会继承父进程的所有环境变量及其值。但是子进程修改的环境变量不会影响父进程。比如，在终端中设置LANG之后，在终端中启动gedit，gedit将会继承LANG的值。</p>
+<h4>大小写敏感</h4>
+<p>推荐使用大写英文字母和_（下划线）命名</p>
+<h4>Bash Shell快速分配和假继承</h4>
+<p>命令：LANGUAGE=he FOO=bar gedit，子进程gedit会采用分配的环境变量值，但是其实没有修改父进程的环境变量值，其他子进程并不会受影响</p>
+<h3>持久化环境变量</h3>
+<h4>会话级环境变量</h4>
+<p>只影响特定用户的环境变量修改时，可以修改~/.pam_environment 和 ~/.profile。修改后需要重新登录才能初始化环境变量。</p>
+<p><strong>~/.pam_environment </strong></p>
+<p>示例：</p>
+<div class="highlight"><pre><span></span><span class="nv">FOO</span><span class="o">=</span>bar
+PATH <span class="nv">DEFAULT</span><span class="o">=</span><span class="si">${</span><span class="nv">PATH</span><span class="si">}</span>:/home/@<span class="o">{</span>PAM_USER<span class="o">}</span>/MyPrograms
+</pre></div>
+
+
+<p>该文件并不是脚本文件</p>
+<p><strong>~/.profile</strong></p>
+<p>该文件在会在启动桌面会话时被DisplayManager自动执行，在通过文本控制台登录时也会被自动执行</p>
+<p>示例：</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">FOO</span><span class="o">=</span>bar
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PATH</span><span class="s2">:</span><span class="nv">$HOME</span><span class="s2">/MyPrograms&quot;</span>
+</pre></div>
+
+
+<p>~/.profile在~/.pam_environment 之后执行</p>
+<p><strong>其他文件</strong></p>
+<p>~/.bashrc, ~/.bash_profile, and ~/.bash_login</p>
+<h4>系统级环境变量</h4>
+<p>系统环境变量包括：/etc/environment或者/etc/profile.d目录</p>
+<p><strong>/etc/environment</strong>（系统的环境变量）</p>
+<p>该文件不是脚本文件，只是配置了环境变量信息，默认只包含了PATH
+示例：</p>
+<div class="highlight"><pre><span></span><span class="nv">FOO</span><span class="o">=</span>bar
+</pre></div>
+
+
+<p><strong>/etc/profile.d/*.sh</strong></p>
+<p>在/etc/profile.d 目录下的所有sh文件会在控制台登录或者SSH登录时被执行，在桌面会话启动时DisplayManager也会去执行这些sh文件
+示例：</p>
+<div class="highlight"><pre><span></span>/etc/profile.d/myenvvars.sh
+
+<span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/lib/jvm/jdk1.7.0
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$JAVA_HOME</span>/bin
+</pre></div>
+
+
+<p><strong>其他文件</strong></p>
+<p><strong>/etc/profile</strong>（所有用户的环境变量）</p>
+<p>常常用来作为系统级别的环境变量配置文件，/etc/profile也是根据/etc/profile.d 下的文件生成的(Files in /etc/profile.d are sourced by /etc/profile.)</p>
+<p><strong>/etc/default/locale </strong>用户设置本地化相关的环境变量</p>
+<p><strong>/etc/bash.bashrc</strong>,只对Bash shell启动的程序有效，在图形化环境中无法使用</p>
+<h3>对比环境变量配置文件</h3>
+<h4>系统级</h4>
+<p><strong>/etc/profile</strong>（所有用户的环境变量）</p>
+<p>此文件为系统的每个用户设置环境信息,当用户第一次登录时,该文件被执行。并从/etc/profile.d目录的配置文件中搜集shell的设置.</p>
+<p><strong>/etc/bashrc</strong></p>
+<p>为每一个运行bash shell的用户执行此文件.当bash shell被打开时,该文件被读取.</p>
+<h4>用户级</h4>
+<p><strong>~/.profile</strong></p>
+<p>每个用户都可使用该文件输入专用于自己使用的shell信息,当用户登录时,该文件仅仅执行一次!默认情况下,他设置一些环境变量,执行用户的.bashrc文件。不同系统该文件可能不同。</p>
+<p><strong>~/.bashrc</strong></p>
+<p>该文件包含专用于你的bash shell的bash信息,当登录时以及每次打开新的shell时,该文件被读取.</p>
+<p>~/.bashrc中设定的变量(局部)只能继承/etc/profile中的变量</p>
+<!-- 个人理解，系统级在用户级之前加载，而系统级中/etc/profile先于/etc/environment执行 -->
+
+<h4>总结</h4>
+<p><strong>/etc/environment是登录系统读取的第一个文件，是整个系统包括所有进程的环境变量，与登录用户无关。以后才是/etc/profile, .profile等等</strong></p>
+<h3>附：</h3>
+<h4>为什么Jenkins中的Slave系统信息中环境变量的PATH和登录后的Shell下的PATH不同（相同用户）？</h4>
+<p>Jenkins的Slave系统信息读取的环境变量信息是Slave服务器的Jenkins进程环境变量信息，位置：</p>
+<p>系统启动后会执行/etc/environment，/etc/profile由于用户为登录，无法加载，在Jenkins进程启动时，生成/proc/processid/environ的值不包含/etc/profile定义的环境变量
+通过SSH登录，Shell打开后，会再去加载所有用户的环境变量，则正常获取用户的环境变量</p>
+<p>格式化输出进程的环境变量信息：</p>
+<div class="highlight"><pre><span></span>cat /proc/2279/environ <span class="p">|</span> tr <span class="s1">&#39;\0&#39;</span> <span class="s1">&#39;\n&#39;</span>
+
+<span class="nv">LC_CTYPE</span><span class="o">=</span>UTF-8
+<span class="nv">USER</span><span class="o">=</span>vagrant
+<span class="nv">LOGNAME</span><span class="o">=</span>vagrant
+<span class="nv">HOME</span><span class="o">=</span>/home/vagrant
+<span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/jdk1.8.0_91
+<span class="nv">MAIL</span><span class="o">=</span>/var/mail/vagrant
+<span class="nv">SHELL</span><span class="o">=</span>/bin/bash
+<span class="nv">SSH_CLIENT</span><span class="o">=</span>10.0.2.2 <span class="m">54629</span> 22
+<span class="nv">SSH_CONNECTION</span><span class="o">=</span>10.0.2.2 <span class="m">54629</span> 10.0.2.15 22
+<span class="nv">SSH_TTY</span><span class="o">=</span>/dev/pts/0
+<span class="nv">TERM</span><span class="o">=</span>xterm-256color
+<span class="nv">XDG_SESSION_ID</span><span class="o">=</span>6
+<span class="nv">XDG_RUNTIME_DIR</span><span class="o">=</span>/run/user/1000
+<span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8
+</pre></div>
+
+
+<p>参考资料:</p>
+<p><a href="https://help.ubuntu.com/community/EnvironmentVariables">https://help.ubuntu.com/community/EnvironmentVariables</a></p>
+<p><a href="https://help.ubuntu.com/community/EnvironmentVariables">http://www.cnblogs.com/xmkk/p/3582336.html</a></p>
+
+		    <div class="tags">
+		        <p>tags: <a href="/tag/linux.html">Linux</a><a href="/tag/ubuntu.html">Ubuntu</a><a href="/tag/huan-jing-bian-liang.html">环境变量</a><a href="/tag/jenkins.html">Jenkins</a></p>
+		    </div>
+
+<div class="sharing">
+</div>
+<hr>
+		
+	</section>
+	<div class="clearfix"></div>
+
+</article>
+
+	</div>
+
+	<!-- Sidebar -->
+	<div class="four columns">
+		<!-- About  -->
+		<div class="widget no-mg-top">
+			<h3 class="headline">About</h3><span class="line"></span><div class="clearfix"></div>
+			<p>这里是龙井的博客，内容包括开发技术、持续集成、读书笔记、DevOps、互联网思维、精益、Linux等等</p>
+		</div>
+
+		<!-- Categories -->
+		<div class="widget">
+			<h3 class="headline">Categories</h3><span class="line"></span><div class="clearfix"></div>
+			<nav class="categories">
+				<ul>
+					    <li><a href="/category/chi-xu-ji-cheng.html">持续集成</a></li>
+					    <li><a href="/category/devops.html">DevOps</a></li>
+					    <li><a href="/category/du-shu-bi-ji.html">读书笔记</a></li>
+					    <li class="active"><a href="/category/linux.html">Linux</a></li>
+					    <li><a href="/category/min-jie.html">敏捷</a></li>
+					    <li><a href="/category/za-wen.html">杂文</a></li>
+				</ul>
+			</nav>
+		</div>
+		
+		<!-- Tags -->
+		<div class="widget">
+			<h3 class="headline">Tags</h3><span class="line"></span><div class="clearfix"></div>
+			<nav class="tags">				    <a href="/tag/2016.html">2016</a>
+				    <a href="/tag/bo-ke.html">博客</a>
+				    <a href="/tag/chi-xu-ji-cheng.html">持续集成</a>
+				    <a href="/tag/chi-xu-jiao-fu.html">持续交付</a>
+				    <a href="/tag/devops.html">DevOps</a>
+				    <a href="/tag/docker.html">Docker</a>
+				    <a href="/tag/du-shu-bi-ji.html">读书笔记</a>
+				    <a href="/tag/fan-yi.html">翻译</a>
+				    <a href="/tag/feng-huang-xiang-mu.html">凤凰项目</a>
+				    <a href="/tag/gerrit.html">Gerrit</a>
+				    <a href="/tag/gong-cheng-shi-wen-hua.html">工程师文化</a>
+				    <a href="/tag/huan-jing-bian-liang.html">环境变量</a>
+				    <a href="/tag/jenkins.html">Jenkins</a>
+				    <a href="/tag/ji-zhu.html">技术</a>
+				    <a href="/tag/linux.html">Linux</a>
+				    <a href="/tag/martin-fowler.html">Martin Fowler</a>
+				    <a href="/tag/openstack.html">OpenStack</a>
+				    <a href="/tag/pelican.html">Pelican</a>
+				    <a href="/tag/python.html">Python</a>
+				    <a href="/tag/ren-sheng.html">人生</a>
+				    <a href="/tag/scrum.html">Scrum</a>
+				    <a href="/tag/travis.html">Travis</a>
+				    <a href="/tag/ubuntu.html">Ubuntu</a>
+				    <a href="/tag/wen-hua.html">文化</a>
+				    <a href="/tag/yun-ji-suan.html">云计算</a>
+				    <a href="/tag/zhan-li-hui-yi.html">站立会议</a>
+				    <a href="/tag/zhuan-ye-shu-ji.html">专业书籍</a>
+				    <a href="/tag/zi-dong-hua-bu-shu.html">自动化部署</a>
+				    <a href="/tag/zi-dong-hua-ce-shi.html">自动化测试</a>
+			</nav>
+		</div>
+	</div>
+			</div>
+			<!-- Container / End -->
+		</div>
+		<!-- Content Wrapper / End -->
+
+
+		<div id="footer-bottom">
+			<!-- Container -->
+			<div class="container">
+				<div class="eight columns">Blog powered by <a href="http://getpelican.com">Pelican</a></div>
+					<div class="eight columns">
+						<ul class="social-icons-footer">
+								<li>
+									<a href="https://github.com/ijyun" class="tooltip top" title="github">
+										<i class="icon-github"></i>
+									</a>
+								</li>
+							<li><a href="/None" class="tooltip top" title="RSS"><i class="icon-rss"></i></a></li>
+						</ul>
+					</div>
+			</div>
+			<!-- Container / End -->
+		</div>
+		<!-- Footer Bottom / End -->
+		
+	<!-- Javascripts -->
+	<script src="/theme/js/jquery.min.js"></script>
+	</body>
+</html>

@@ -46,7 +46,7 @@
 	<meta property="og:url" content="/2016/05/13/openstack-ci-case.html">
 	<meta property="og:title" content="OpenStack持续集成实践">
 	<meta property="og:description" content="">
-	   <meta property="og:image" content="/images/guilherme-toti.jpg">
+       <meta property="og:image" content="//ci/openstack-ci-case/openstack-software-diagram.png">
 	<meta property="article:published_time" content="2016-05-13 10:20:00+08:00">
 	</head>
 	<body>
@@ -100,6 +100,13 @@
 			<div class="container">
 	<div class="twelve alt columns">
 <article class="post" style="margin: 0; border: 0;">
+	<figure class="post-img media">
+		<div class="mediaholder">
+			<a class="mfp-image" title="OpenStack持续集成实践" href="/2016/05/13/openstack-ci-case.html">
+				<img src="/images//ci/openstack-ci-case/openstack-software-diagram.png" alt=""/>
+			</a>
+		</div>
+	</figure>
 	
 	<div class="post-format">
 		<div class="circle"><i class="icon-pencil"></i><span></span></div>
@@ -116,10 +123,51 @@
 			</ul>
 		</header>
 
-		<h3>OpenStack介绍</h3>
-<p>OpenStack是开源的云计算（IaaS）平台</p>
-<p><img alt="" src="http://docs.openstack.org/infra/publications/overview/images/openstack-software-diagram.png" /></p>
-<h4>项目列表</h4>
+		<p><link rel="stylesheet" href="http://yandex.st/highlightjs/6.2/styles/googlecode.min.css"></p>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+
+<script src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+      $("h1,h2,h3,h4,h5,h6").each(function(i,item){
+        var tag = $(item).get(0).localName;
+        if ($(this).text()!="目录") {
+
+        $(item).attr("id","wow"+i);
+        $("#category").append('<font class="new'+tag+'" >'+$(this).text()+'</font></br>');
+        $(".newh1").css("margin-left",0);
+        $(".newh1").css("font-size",22);
+        $(".newh2").css("margin-left",20);
+
+        $(".newh2").css("font-size",20);
+        $(".newh3").css("margin-left",40);
+        $(".newh3").css("font-size",18);
+        $(".newh4").css("margin-left",60);
+        $(".newh4").css("font-size",16);
+        $(".newh5").css("margin-left",80);
+        $(".newh5").css("font-size",14);
+        $(".newh6").css("margin-left",100);
+
+
+        }
+
+      });
+ });
+</script>
+
+<div id="category"></div>
+
+<div style="height:300px"></div>
+
+<h3>一、OpenStack介绍</h3>
+<p>OpenStack是一个旨在为公共及私有云的建设与管理提供软件的开源项目，属于云计算（IaaS）平台，其包含众多子项目，有大量的机构与厂商和开发者参与到OpenStack的生态中。</p>
+<p><img alt="openstack" src="http://docs.openstack.org/infra/publications/overview/images/openstack-software-diagram.png" /></p>
+<h4>0. 架构图</h4>
+<p><img alt="architecture" src="/images/ci/openstack-ci-case/openstack-logical-arch-folsom.png" /></p>
+<h4>1. 项目列表</h4>
 <ul>
 <li>nova (compute)</li>
 <li>swift (object storage)</li>
@@ -134,7 +182,7 @@
 <li>sahara (hadoop)</li>
 </ul>
 <p>详细项目列表：<a href="http://www.openstack.org/software/project-navigator">http://www.openstack.org/software/project-navigator</a></p>
-<h4>发布管理</h4>
+<h4>2. 发布管理</h4>
 <ul>
 <li>基于时间发布（Time Based Releases）</li>
 <li>发布周期6个月</li>
@@ -142,15 +190,61 @@
 <li>内部里程碑发布</li>
 <li>发布稳定版本</li>
 </ul>
-<h4>贡献者</h4>
+<h4>3. 贡献者</h4>
 <ul>
 <li>独立个人</li>
 <li>商业组织</li>
 <li>非盈利机构</li>
 <li>国家或地区政府机构</li>
 </ul>
-<p><img alt="" src="http://docs.openstack.org/infra/publications/overview/images/contributor-pie-chart.png" /></p>
-<h4>标准工具</h4>
+<p><img alt="contributor" src="http://docs.openstack.org/infra/publications/overview/images/contributor-pie-chart.png" /></p>
+<h4>4. CI规模</h4>
+<ol>
+<li>500+ Git仓库</li>
+<li>5000+ Jenkins Jobs</li>
+<li>10+ Jenkins Masters</li>
+<li>1000+ Slaves</li>
+<li>24000+ Jobs per day</li>
+<li>300+ Developer</li>
+</ol>
+<h4>5. CI挑战</h4>
+<ol>
+<li>项目多、Git仓库多、分支多（master、stable、cinder...）</li>
+<li>Job巨多（pep8、doc、test、deploy...）</li>
+<li>Job配置麻烦（multiple backends, multiple clouds, multiple deploy sites, etc..）</li>
+<li>CI Pipeline复杂/多（check、gate、release、periodic...）</li>
+</ol>
+<h4>6. 当前持续集成的问题</h4>
+<ol>
+<li>XML难以维护</li>
+<li>经常复制和粘贴Job</li>
+<li>divergent jobs（不一致）</li>
+<li>Job配置没有版本化</li>
+<li>无法保证类似Job的相同配置</li>
+<li>一个Job就得对应一个XML文件</li>
+<li><strong>创建、维护、自动化都很复杂</strong></li>
+</ol>
+<h3>二、持续集成实践</h3>
+<h4>1. 开发基础设施</h4>
+<p><img alt="tools" src="/images/ci/openstack-ci-case/develop-infrastructure.png" /></p>
+<p>持续集成系统主要的工具：</p>
+<ol>
+<li>Storyboard</li>
+<li>Gerrit（Code Review，Git）</li>
+<li>Zuul（CI gate keeper,Build Triggering）</li>
+<li>German(CI gate keeper)</li>
+<li>Jenkins（CI，Automation，Jenkins-job-builder[CI Project creator]，gearman-plugin）</li>
+<li>Devstack(Cloud Test VMs)</li>
+<li>Nodepool(Cloud VM Manager)</li>
+<li>ELK(日志管理)</li>
+<li>Launchpad（Bugs、Releases）</li>
+<li>Blueprints（Launchpad Blueprints用于跟踪重大特性的实现）</li>
+<li>IRC</li>
+<li>Python tox（Python打包、测试、发布工具）</li>
+<li>VirtualEnv（在一台机器上创建多个独立的Python运行环境）</li>
+</ol>
+<p>其中：Zuul、Jenkins-job-builder、gearman-plugin、Devstack、Nodepool都是OpenStack Infrastructure team出品。</p>
+<h4>2. 标准化工具</h4>
 <ul>
 <li>Minimize meta-development最小化元开发</li>
 <li>流程差异==浪费开发者时间</li>
@@ -158,39 +252,570 @@
 <li>Consolidate tool development</li>
 <li>Minimize project-specific weird build crud</li>
 </ul>
-<h4>开发基础设施</h4>
-<p><img alt="图片" src="/images/ci/openstack-ci-case/develop-infrastructure.png" /></p>
-<p>OpenStack公布的资料</p>
-<ol>
-<li><a href="http://docs.openstack.org/infra/publications/overview">Scaling OpenStack Development: Continuous Integration Overview</a></li>
-</ol>
-<h4>开发环境</h4>
-<p>Python</p>
+<h5>开发环境</h5>
+<p><strong>Python</strong></p>
 <ul>
 <li>Ubuntu LTS (2.7, 3.4, pypy)</li>
 <li>PEP-8 standards</li>
 <li>Oslo (common libraries)</li>
 <li>virtualenv/pip/tox</li>
 </ul>
-<p>Freenode IRC (#openstack-dev, #openstack-meeting)</p>
-<p>DevStack</p>
-<p>Tests run on all newly submitted changes</p>
-<p>Code merges are gated on tests</p>
-<h4>项目门禁</h4>
-<p>保证代码质量
-保护开发者
-保证代码始终可集成
-人人平等
-流程相同
-流程透明
-流程自动化</p>
-<h4>自动化一切</h4>
-<h4>持续集成工作流</h4>
-<p><img alt="" src="http://docs.openstack.org/infra/publications/overview/images/openstack-ci-workflow.png" /></p>
-<h4>开发流程</h4>
-<p><img alt="" src="http://docs.openstack.org/infra/publications/overview/images/contribution-path.png" /></p>
-<h3>Zuul</h3>
-<p>Zuul是面向流水线的项目门禁与自动化系统。</p>
+<p><strong>Freenode IRC (#openstack-dev, #openstack-meeting)</strong></p>
+<p><strong>DevStack</strong></p>
+<p><strong>Tests run on all newly submitted changes</strong></p>
+<p><strong>Code merges are gated on tests</strong></p>
+<h4>3. 核心理念</h4>
+<h5>项目门禁</h5>
+<p>代码提交和代码合并都设置有相应的门禁</p>
+<p><strong>作用</strong></p>
+<ol>
+<li>保证代码质量</li>
+<li>保护开发者，开发总是从可工作的代码开始</li>
+<li>保证代码始终可集成，有问题的代码不会被集成到主干</li>
+<li>持续进行测试</li>
+<li>人人平等 <ol>
+<li>流程相同</li>
+<li>流程透明</li>
+<li>流程自动化</li>
+</ol>
+</li>
+</ol>
+<h5>自动化一切</h5>
+<h4>4. 工作流</h4>
+<h5>持续集成工作流</h5>
+<p><img alt="CI Workflow" src="http://docs.openstack.org/infra/publications/overview/images/openstack-ci-workflow.png" /></p>
+<h5>开发流程</h5>
+<p><img alt="Process Flow" src="http://docs.openstack.org/infra/publications/overview/images/contribution-path.png" /></p>
+<h4>5. 代码审查-Gerrit</h4>
+<p>OpenStack采用Gerrit进行代码审查，主要的配置内容包括：project、group、users、acl（访问控制列表）。与Gerrit集成主要通过hooks、event-stream、REST API。</p>
+<h5>States of a Patch</h5>
+<ol>
+<li>Code Submitted</li>
+<li>Code Verified</li>
+<li>Code Reviewed</li>
+<li>Code Accepted</li>
+<li>Code Merged</li>
+</ol>
+<h5>Gerrit Triggers类型</h5>
+<ol>
+<li>Patchset uploaded</li>
+<li>Change merged</li>
+<li>Comment added (review state)</li>
+<li>Ref updated (branches, tags, etc)</li>
+</ol>
+<h5>Gerrit与Jenkins集成</h5>
+<p>在Gerrit评论中显示Jenkins的Job执行结果和耗时，作为审查的依据</p>
+<h5>Gerrit辅助配置工具Jeepyb</h5>
+<p>Jeepyb是一组帮助简化Gerrit管理的工具集，可以很简便的管理project并和Launchpad/Github进行集成。在Jeepyb中采用YAML文件进行项目定义：</p>
+<div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">project</span><span class="p">:</span> <span class="n">example</span><span class="o">/</span><span class="n">gerrit</span>
+  <span class="n">description</span><span class="p">:</span> <span class="n">Fork</span> <span class="n">of</span> <span class="n">Gerrit</span> <span class="n">used</span> <span class="n">by</span> <span class="n">Example</span>
+<span class="o">-</span> <span class="n">project</span><span class="p">:</span> <span class="n">openstack</span><span class="o">/</span><span class="n">project</span><span class="o">-</span><span class="n">name</span>
+  <span class="n">acl</span><span class="o">-</span><span class="n">config</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">gerrit2</span><span class="o">/</span><span class="n">acls</span><span class="o">/</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">.</span><span class="n">config</span>
+  <span class="n">upstream</span><span class="p">:</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">awesumsauce</span><span class="o">/</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+
+
+<p>Jeepyb基于Gerrit的分组：Administrators,Registered Users,Anonymous Users划分每个项目的项目，针对每个项目都有一个ACL的配置文件。Jeepyb描述项目和分值的权限采用git refs的语法格式。</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="n">access</span> <span class="s2">&quot;refs/heads/*&quot;</span><span class="p">]</span>
+<span class="n">label</span><span class="o">-</span><span class="n">Code</span><span class="o">-</span><span class="n">Review</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.</span><span class="o">.+</span><span class="mi">2</span> <span class="n">group</span> <span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">core</span>
+<span class="n">label</span><span class="o">-</span><span class="n">Workflow</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span><span class="o">.+</span><span class="mi">1</span> <span class="n">group</span> <span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">core</span>
+
+<span class="p">[</span><span class="n">access</span> <span class="s2">&quot;refs/heads/proposed/*&quot;</span><span class="p">]</span>
+<span class="n">label</span><span class="o">-</span><span class="n">Code</span><span class="o">-</span><span class="n">Review</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.</span><span class="o">.+</span><span class="mi">2</span> <span class="n">group</span> <span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">milestone</span>
+<span class="n">label</span><span class="o">-</span><span class="n">Workflow</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span><span class="o">.+</span><span class="mi">1</span> <span class="n">group</span> <span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">milestone</span>
+
+<span class="p">[</span><span class="n">receive</span><span class="p">]</span>
+<span class="n">requireChangeId</span> <span class="o">=</span> <span class="n">true</span>
+<span class="n">requireContributorAgreement</span> <span class="o">=</span> <span class="n">tree</span>
+
+<span class="p">[</span><span class="n">submit</span><span class="p">]</span>
+<span class="n">mergeContent</span> <span class="o">=</span> <span class="n">true</span>
+</pre></div>
+
+
+<h5>Gerrit和Launchpad集成</h5>
+<p>修改etc/gerrit.config</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="n">commentlink</span> <span class="s2">&quot;launchpad&quot;</span><span class="p">]</span>  
+  <span class="n">match</span> <span class="o">=</span> <span class="s2">&quot;([Bb]ug</span><span class="se">\\</span><span class="s2">s+#?)(</span><span class="se">\\</span><span class="s2">d+)&quot;</span>  
+  <span class="n">link</span> <span class="o">=</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bugs</span><span class="o">.</span><span class="n">launchpad</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">mahara</span><span class="o">/+</span><span class="n">bug</span><span class="o">/</span><span class="err">$</span><span class="mi">2</span>
+</pre></div>
+
+
+<p><a href="http://docs.openstack.org/infra/system-config/jeepyb.html">Jeepyb参考文档</a></p>
+<p><a href="https://gerrit-review.googlesource.com/Documentation/config-project-config.html">Gerrit项目配置文档</a></p>
+<h4>6. 持续集成-Jenkins</h4>
+<p>在OpenStack的实践中，Jenkins使用Zuul和Gearman进行管理。
+Jenkins中的Job类型包括：</p>
+<h5>Gate tests</h5>
+<ul>
+<li>unit tests</li>
+<li>integraton tests</li>
+<li>code style</li>
+</ul>
+<h5>Post-merge automation</h5>
+<ul>
+<li>docs</li>
+<li>tarballs</li>
+<li>pypi</li>
+</ul>
+<h5>Jobs under development</h5>
+<ul>
+<li>experimental</li>
+<li>silent</li>
+<li>non-voting</li>
+</ul>
+<h5>Periodic jobs</h5>
+<ul>
+<li>bitrot checks</li>
+<li>image updates</li>
+<li>very long tests</li>
+</ul>
+<h4>7. 任务配置管理-Jenkins Job Builder</h4>
+<p>Jenkins Job Builder基于YAML格式来定义Job内容，采用命令行创建和管理Jenkins Job，JJB文件采用版本控制进行管理。JJB使用Jenkins的API操作Jenkins的功能，支持Python 2.7~3.4。</p>
+<h5>效果</h5>
+<ol>
+<li>一次定义，多处使用，5859个Job只有87个定义文件JJB</li>
+<li>参数化Job配置，易于维护</li>
+<li>版本化Job定义，易追溯</li>
+<li>更加高效和容易对阅读、创建和维护Job</li>
+<li>Developers empowered to own their Jenkins jobs</li>
+</ol>
+<h5>OpenStack的使用方式</h5>
+<ol>
+<li>所有Job都是以JJB（Jenkins只是用来查看的）</li>
+<li>使用YAML定义Job文件</li>
+<li>使用Gerrit管理Job定义的创建和变更</li>
+<li>使用一个JJB定义创建多个Jobs</li>
+<li>使用Puppet推送JJB进行部署、更新Jenkins的Job</li>
+</ol>
+<h5>示例</h5>
+<p>Job模板</p>
+<div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">job</span><span class="o">-</span><span class="n">template</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;gate-{name}-docs&#39;</span>
+    <span class="n">builders</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">shell</span><span class="p">:</span> <span class="s1">&#39;git checkout {branch_name}&#39;</span>
+</pre></div>
+
+
+<p>JJB项目定义</p>
+<div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">project</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">project</span><span class="o">-</span><span class="n">name</span>
+    <span class="n">branch_name</span><span class="p">:</span> <span class="n">new_branch</span>
+    <span class="n">jobs</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="p">{</span><span class="n">name</span><span class="p">}</span><span class="o">-</span><span class="n">docs</span>
+</pre></div>
+
+
+<p>Job分组管理</p>
+<div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">job</span><span class="o">-</span><span class="n">group</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;{name}-tests&#39;</span>
+    <span class="n">jobs</span><span class="p">:</span>
+      <span class="o">-</span> <span class="s1">&#39;{name}-unit-tests&#39;</span>
+      <span class="o">-</span> <span class="s1">&#39;{name}-perf-tests&#39;</span>
+</pre></div>
+
+
+<p>Job定义</p>
+<div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">job</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">foo</span><span class="o">-</span><span class="n">test</span>
+    <span class="n">project</span><span class="o">-</span><span class="nb">type</span><span class="p">:</span> <span class="n">freestyle</span>
+    <span class="n">builders</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">make</span><span class="o">-</span><span class="n">test</span>
+    <span class="n">publishers</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">archive</span>
+</pre></div>
+
+
+<p>可以在Job中增加模块，比如：builder、publisher等
+使用宏来定义Jenkins中的Action</p>
+<div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">builder</span><span class="p">:</span>
+  <span class="n">name</span><span class="p">:</span> <span class="n">make</span><span class="o">-</span><span class="n">test</span>
+  <span class="n">builders</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">shell</span><span class="p">:</span> <span class="s1">&#39;make test&#39;</span>
+</pre></div>
+
+
+<p>安装与使用Demo</p>
+<div class="highlight"><pre><span></span><span class="mf">1.</span> <span class="n">Install</span>
+    <span class="mf">1.</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">jenkins</span><span class="o">-</span><span class="n">job</span><span class="o">-</span><span class="n">builder</span>
+<span class="mf">2.</span> <span class="n">Run</span>
+    <span class="mf">1.</span> <span class="n">jenkins</span><span class="o">-</span><span class="n">jobs</span> <span class="o">--</span><span class="n">conf</span> <span class="n">my_jenkins</span><span class="o">.</span><span class="n">ini</span> <span class="n">update</span> <span class="n">simple</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+
+
+<p>simple.yaml：</p>
+<div class="highlight"><pre><span></span><span class="c1"># a simple job</span>
+<span class="o">-</span> <span class="n">job</span><span class="p">:</span>
+     <span class="n">name</span><span class="p">:</span> <span class="n">simple</span>
+     <span class="n">node</span><span class="p">:</span> <span class="n">centos</span>
+     <span class="n">builders</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">shell</span><span class="p">:</span> <span class="err">‘</span><span class="n">echo</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">my</span> <span class="n">job</span><span class="err">’</span>
+</pre></div>
+
+
+<p>demo.yaml</p>
+<div class="highlight"><pre><span></span><span class="c1"># demo using JJB templates</span>
+<span class="o">-</span> <span class="n">job</span><span class="o">-</span><span class="n">template</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;{name}-{pyver}-{tests}-{branch}&#39;</span>
+    <span class="n">builders</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">shell</span><span class="p">:</span> <span class="s1">&#39;git checkout {branch_name}&#39;</span>
+    <span class="n">publishers</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">email</span><span class="p">:</span>
+          <span class="n">recipients</span><span class="p">:</span> <span class="s1">&#39;{mail-to}&#39;</span>   
+ <span class="o">-</span> <span class="n">project</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span><span class="n">nova</span>
+    <span class="n">pyver</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">py26</span><span class="p">:</span>
+         <span class="n">branch</span><span class="p">:</span> <span class="n">stable</span><span class="o">-</span><span class="mf">1.0</span>
+      <span class="o">-</span> <span class="n">py27</span><span class="p">:</span>
+         <span class="n">branch</span><span class="p">:</span> <span class="n">master</span>
+    <span class="n">tests</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">unit</span><span class="p">:</span>
+         <span class="n">mail</span><span class="o">-</span><span class="n">to</span><span class="p">:</span> <span class="n">developer</span><span class="nd">@nowhere.net</span>
+      <span class="o">-</span> <span class="n">perf</span><span class="p">:</span>
+         <span class="n">mail</span><span class="o">-</span><span class="n">to</span><span class="p">:</span> <span class="n">tester</span><span class="nd">@nowhere.net</span>        
+    <span class="n">jobs</span><span class="p">:</span>
+      <span class="o">-</span> <span class="s1">&#39;{name}-{pyver}-{tests}-{branch}&#39;</span>
+</pre></div>
+
+
+<p>server.ini</p>
+<div class="highlight"><pre><span></span><span class="c1"># JJB configuration</span>
+<span class="p">[</span><span class="n">jenkins</span><span class="p">]</span>
+<span class="n">user</span><span class="o">=</span><span class="n">USERNAME</span>
+<span class="n">password</span><span class="o">=</span><span class="n">PASSWORD</span>
+<span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8080</span>
+</pre></div>
+
+
+<p>执行</p>
+<div class="highlight"><pre><span></span><span class="c1"># Test JJB yaml to xml transform</span>
+<span class="n">jenkins</span><span class="o">-</span><span class="n">jobs</span> <span class="n">test</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span> <span class="n">demo</span><span class="o">.</span><span class="n">yaml</span>
+<span class="c1"># Upload to Jenkins server</span>
+<span class="n">jenkins</span><span class="o">-</span><span class="n">jobs</span> <span class="o">--</span><span class="n">conf</span> <span class="n">server</span><span class="o">.</span><span class="n">ini</span> <span class="n">update</span> <span class="n">demo</span><span class="o">.</span><span class="n">yaml</span>
+<span class="err">将会一次性创建多个到</span><span class="n">output</span><span class="err">下</span>
+</pre></div>
+
+
+<h5>特性</h5>
+<ul>
+<li>Works with Jenkins REST Api</li>
+<li>Default definitions to reuse parameters</li>
+<li>Macro definitions to reuse plugins</li>
+<li>Template definitions to reuse jobs</li>
+<li>Projects to group related jobs</li>
+<li>Job groups to organize related job templates</li>
+<li>Test jobs before deploying</li>
+<li>Automated job removal</li>
+<li>Cache for idempotent job updates</li>
+<li>Unit tests (84% coverage)</li>
+<li>Documented</li>
+</ul>
+<h5>Nodepool构建资源池</h5>
+<ul>
+<li>Service used to deploy and manage a pool of devstack images on the cloud</li>
+<li>Works with any OpenStack provider</li>
+<li>Once per day a new image is generated with cached devstack content</li>
+<li>Spins instances based on desired image on demand</li>
+<li>Can use disk-image-builder to build images</li>
+<li>Communicates with Zuul using gearman-servers for getting realtime demand</li>
+<li>Communicates with Jenkins to attach nodes using Jenkins API</li>
+</ul>
+<p>针对Jenkins Job Builer的单独介绍：<a href="http://docs.openstack.org/infra/publications/jenkins-job-builder/">http://docs.openstack.org/infra/publications/jenkins-job-builder/</a>
+Jenkins Job BUilder配置实例<a href="http://git.openstack.org/cgit/openstack-infra/project-config/tree/jenkins/jobs">:http://git.openstack.org/cgit/openstack-infra/project-config/tree/jenkins/jobs</a></p>
+<h4>8. 流水线配置-Zuul</h4>
+<p>Zuul是面向流水线的项目主干门禁与自动化系统。和Gerrit与Jenkins有接口，配置灵活（layout.yaml），适合多种项目的自动化，可以并行执行一系列变更的测试。
+Zuul的两个主要组件：scheduler和merger。Zuul保证合并进入源代码库的变更都是通过测试的。</p>
+<p>OpenStack的Zuul Pipelines类型包括：check、gate、release、silent、experimental、periodic...
+Zuul会监测Gerrit的事件以触发相应的Pipeline及其对应的Job。</p>
+<h5>组件</h5>
+<ul>
+<li>Connection（Gerrit，SMTP）</li>
+<li>Trigger（Gerrit，Timer，Zuul）</li>
+<li>Reporters（Gerrit，SMTP）</li>
+<li>Zuul Cloner</li>
+<li>Launchers（Gearman Jenkins Plugin）</li>
+<li>Statsd reporting（Metrics）</li>
+<li>
+<p>Zuul Client</p>
+</li>
+<li>
+<p><a href="http://docs.openstack.org/infra/zuul/">文档资料</a></p>
+</li>
+<li><a href="https://github.com/openstack-infra/zuul">源代码</a></li>
+</ul>
+<p><strong>Zuul Project Configuration</strong></p>
+<div class="highlight"><pre><span></span><span class="n">projects</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">openstack</span><span class="o">/</span><span class="n">nova</span>
+    <span class="n">check</span><span class="p">:</span> 
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">pep8</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">docs</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">python27</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">tempest</span><span class="o">-</span><span class="n">devstack</span><span class="o">-</span><span class="n">vm</span><span class="o">-</span><span class="n">full</span>
+    <span class="n">gate</span><span class="p">:</span> 
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">pep8</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">docs</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">python27</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">tempest</span><span class="o">-</span><span class="n">devstack</span><span class="o">-</span><span class="n">vm</span><span class="o">-</span><span class="n">full</span>
+    <span class="n">experimental</span><span class="p">:</span> 
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">devstack</span><span class="o">-</span><span class="n">vm</span><span class="o">-</span><span class="n">cells</span> 
+    <span class="n">slient</span><span class="p">:</span> 
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">tempest</span><span class="o">-</span><span class="n">devstack</span><span class="o">-</span><span class="n">vm</span><span class="o">-</span><span class="n">large</span><span class="o">-</span><span class="n">ops</span>
+    <span class="n">post</span><span class="p">:</span> 
+      <span class="o">-</span> <span class="n">nova</span><span class="o">-</span><span class="n">branch</span><span class="o">-</span><span class="n">tarball</span>
+      <span class="o">-</span> <span class="n">nova</span><span class="o">-</span><span class="n">coverage</span>
+      <span class="o">-</span> <span class="n">nova</span><span class="o">-</span><span class="n">docs</span>
+      <span class="o">-</span> <span class="n">nova</span><span class="o">-</span><span class="n">upstream</span><span class="o">-</span><span class="n">translation</span><span class="o">-</span><span class="n">update</span>
+    <span class="n">pre</span><span class="o">-</span><span class="n">release</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">nova</span><span class="o">-</span><span class="n">tarball</span>     
+    <span class="n">release</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">nova</span><span class="o">-</span><span class="n">tarball</span>  
+      <span class="o">-</span> <span class="n">nova</span><span class="o">-</span><span class="n">docs</span>
+    <span class="n">periodic</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">nova</span><span class="o">-</span><span class="n">propose</span><span class="o">-</span><span class="n">translation</span><span class="o">-</span><span class="n">update</span>
+      <span class="o">-</span> <span class="n">periodic</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">python27</span><span class="o">-</span><span class="n">stable</span><span class="o">-</span><span class="n">folsom</span>     
+      <span class="o">-</span> <span class="n">periodic</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">python27</span><span class="o">-</span><span class="n">stable</span><span class="o">-</span><span class="n">grizzly</span>
+</pre></div>
+
+
+<h5>Project Gating</h5>
+<p>Preemptive CI</p>
+<h5>Speculative Execution（预测执行）</h5>
+<ul>
+<li>Serialize changes across all projects</li>
+<li>Speculative execution of tests</li>
+<li>Run in parallel in order triggered</li>
+<li>Assume success</li>
+<li>Start over on failure</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/Speculative_execution"><strong>预测执行</strong></a>会预测并提前执行可能需要的任务，以便加速整个处理过程，在流水线中广泛使用以提高整体效率！</p>
+<h5>Check Pipeline</h5>
+<div class="highlight"><pre><span></span><span class="n">pipelines</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">check</span>
+    <span class="n">manager</span><span class="p">:</span> <span class="n">IndependentPiplelineManager</span>
+    <span class="n">precedence</span><span class="p">:</span> <span class="n">low</span>
+    <span class="n">trigger</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">event</span><span class="p">:</span> <span class="n">patchset</span><span class="o">-</span><span class="n">created</span>
+    <span class="n">success</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="n">verified</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="n">failure</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="n">verified</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+
+
+<h5>Gate Pipeline</h5>
+<div class="highlight"><pre><span></span><span class="n">pipelines</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">name</span>
+    <span class="n">manager</span><span class="p">:</span> <span class="n">DependentPiplelineManager</span>
+    <span class="n">precedence</span><span class="p">:</span> <span class="n">high</span>
+    <span class="n">trigger</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">event</span><span class="p">:</span> <span class="n">comment</span><span class="o">-</span><span class="n">added</span>
+          <span class="n">approval</span><span class="p">:</span>
+            <span class="o">-</span> <span class="n">approved</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="n">start</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="n">verified</span><span class="p">:</span> <span class="mi">0</span>         
+    <span class="n">success</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="n">verified</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="n">submit</span><span class="p">:</span> <span class="n">true</span>
+    <span class="n">failure</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="n">verified</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span>
+</pre></div>
+
+
+<h5>Post-Merge Pipeline</h5>
+<div class="highlight"><pre><span></span><span class="n">pipelines</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">post</span>
+    <span class="n">manager</span><span class="p">:</span> <span class="n">IndependentPiplelineManager</span>
+    <span class="n">trigger</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">event</span><span class="p">:</span> <span class="n">ref</span><span class="o">-</span><span class="n">updated</span>
+          <span class="n">ref</span><span class="p">:</span> <span class="o">^</span><span class="p">(</span><span class="err">?!</span><span class="n">refs</span><span class="o">/</span><span class="p">)</span><span class="o">.*</span><span class="err">$</span>
+</pre></div>
+
+
+<h5>Experimental Pipeline</h5>
+<div class="highlight"><pre><span></span><span class="n">pipelines</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">experimental</span>
+    <span class="n">precedence</span><span class="p">:</span> <span class="n">low</span>
+    <span class="n">trigger</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">event</span><span class="p">:</span> <span class="n">comment</span><span class="o">-</span><span class="n">added</span>
+          <span class="n">comment_filter</span><span class="p">:</span> <span class="p">(</span><span class="err">?</span><span class="n">i</span><span class="p">)</span><span class="o">^</span>\<span class="n">s</span><span class="o">*</span><span class="n">check</span> <span class="n">experimental</span>\<span class="n">s</span><span class="o">*</span><span class="err">$</span>
+    <span class="n">success</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="n">force</span><span class="o">-</span><span class="n">message</span><span class="p">:</span> <span class="n">true</span>         
+    <span class="n">failure</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="n">force</span><span class="o">-</span><span class="n">message</span><span class="p">:</span> <span class="n">true</span>
+</pre></div>
+
+
+<h5>Slient Pipeline</h5>
+<div class="highlight"><pre><span></span><span class="n">pipelines</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">slient</span>
+    <span class="n">manager</span><span class="p">:</span> <span class="n">IndependentPiplelineManager</span>
+    <span class="n">trigger</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">event</span><span class="p">:</span> <span class="n">patchset</span><span class="o">-</span><span class="n">created</span>
+</pre></div>
+
+
+<h5>Release Pipeline</h5>
+<div class="highlight"><pre><span></span><span class="n">pipelines</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">release</span>
+    <span class="n">manager</span><span class="p">:</span> <span class="n">IndependentPiplelineManager</span>
+    <span class="n">precedence</span><span class="p">:</span> <span class="n">high</span>
+    <span class="n">trigger</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">event</span><span class="p">:</span> <span class="n">ref</span><span class="o">-</span><span class="n">updated</span>
+          <span class="n">ref</span><span class="p">:</span> <span class="o">^</span><span class="n">refs</span><span class="o">/</span><span class="n">tags</span><span class="o">/</span><span class="p">([</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="o">+</span>\<span class="o">.</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="o">+</span><span class="err">$</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">pre</span><span class="o">-</span><span class="n">release</span>
+    <span class="n">manager</span><span class="p">:</span> <span class="n">IndependentPiplelineManager</span>
+    <span class="n">precedence</span><span class="p">:</span> <span class="n">high</span>
+    <span class="n">trigger</span><span class="p">:</span>
+      <span class="n">gerrit</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">event</span><span class="p">:</span> <span class="n">ref</span><span class="o">-</span><span class="n">updated</span>
+          <span class="n">ref</span><span class="p">:</span> <span class="o">^</span><span class="n">refs</span><span class="o">/</span><span class="n">tags</span><span class="o">/</span><span class="p">([</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="o">+</span>\<span class="o">.</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">alpha</span><span class="o">|</span><span class="n">beta</span><span class="o">|</span><span class="n">candidate</span><span class="o">|</span><span class="n">rc</span><span class="o">|</span><span class="n">a</span><span class="o">|</span><span class="n">b</span><span class="o">|</span><span class="n">c</span><span class="o">|</span><span class="n">r</span><span class="o">|</span><span class="n">g</span><span class="p">)[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="o">*</span><span class="err">$</span>
+</pre></div>
+
+
+<h5>Periodic Pipeline</h5>
+<div class="highlight"><pre><span></span><span class="n">pipelines</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">peiodic</span><span class="o">-</span><span class="n">stable</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Periodic</span> <span class="n">checks</span> <span class="n">of</span> <span class="n">the</span> <span class="n">stable</span> <span class="n">branches</span>
+    <span class="n">manager</span><span class="p">:</span> <span class="n">IndependentPiplelineManager</span>
+    <span class="n">precedence</span><span class="p">:</span> <span class="n">low</span>
+    <span class="n">trigger</span><span class="p">:</span>
+      <span class="n">timer</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">time</span><span class="p">:</span> <span class="s1">&#39;1 6 * * *&#39;</span>
+    <span class="n">failure</span><span class="p">:</span>
+      <span class="n">smtp</span><span class="p">:</span>
+        <span class="n">from</span><span class="p">:</span> <span class="n">jenkins</span><span class="nd">@openstack.org</span>
+        <span class="n">to</span><span class="p">:</span> <span class="n">openstack</span><span class="o">-</span><span class="n">stable</span><span class="o">-</span><span class="n">maint</span><span class="nd">@lists.openstack.org</span>
+        <span class="n">subject</span><span class="p">:</span> <span class="s1">&#39;Stable check of {change.project} failed&#39;</span>
+</pre></div>
+
+
+<h5>Zuul Change Queue</h5>
+<div class="highlight"><pre><span></span><span class="n">projects</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">openstack</span><span class="o">/</span><span class="n">nova</span>
+    <span class="n">gate</span><span class="p">:</span> 
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">python27</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">tempest</span><span class="o">-</span><span class="n">devstack</span><span class="o">-</span><span class="n">vm</span>
+  <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">openstack</span><span class="o">/</span><span class="n">glance</span>
+    <span class="n">gate</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">glance</span><span class="o">-</span><span class="n">python27</span>
+      <span class="o">-</span> <span class="n">gate</span><span class="o">-</span><span class="n">tempest</span><span class="o">-</span><span class="n">devstack</span><span class="o">-</span><span class="n">vm</span>
+</pre></div>
+
+
+<h5>Zuul执行状态视图</h5>
+<p><img alt="Zuul Status View" src="http://docs.openstack.org/infra/publications/zuul/images/status.png" /></p>
+<h4>9. 任务分发（集群）-Gearman</h4>
+<h5>Gearman介绍</h5>
+<p>Gearman是分布式队列系统，分发合适的任务到多台计算机上，以便快速完成大型任务</p>
+<h6>Gearman架构图</h6>
+<p><img alt="Architecture" src="http://docs.openstack.org/infra/publications/gearman-plugin/images/GearmanOverview.gif" /></p>
+<h6>Gearman-Jenkins插件架构图</h6>
+<p><img alt="gearman_plugin_architecture" src="http://docs.openstack.org/infra/publications/gearman-plugin/images/gearman_plugin_architecture1.png" /></p>
+<p>作用：消息系统，分发来自Zuul的工作，Gearman将job server的job发送到job workers上。
+流程：</p>
+<ol>
+<li>Worker注册到Gearman中</li>
+<li>Zuul提交构建请求到Gearman</li>
+<li>Gearman分发Job到Workers</li>
+</ol>
+<h6>Gearman Client示例</h6>
+<p>Python Client：<a href="https://github.com/zaro0508/gearman-plugin-client">https://github.com/zaro0508/gearman-plugin-client</a></p>
+<p>Java Client：<a href="https://git.openstack.org/cgit/openstack-infra/gearman-plugin/tree/src/main/java/hudson/plugins/gearman/example">https://git.openstack.org/cgit/openstack-infra/gearman-plugin/tree/src/main/java/hudson/plugins/gearman/example</a></p>
+<p>Zuul Client：<a href="http://git.openstack.org/cgit/openstack-infra/zuul">http://git.openstack.org/cgit/openstack-infra/zuul</a></p>
+<h6>特性</h6>
+<ul>
+<li>Gearman plugin reloads on jenkins restart: meaning that when jenkins restarts the gearman worker threads are automatically restarted and reconnect to a gearman server.</li>
+<li>High availability(ish). When one master goes down the other master(s) will continue to execute builds however the in flight jobs on the down master will be lost.</li>
+<li>Horizontal scalability. Just continue to add more jenkins masters to distribute the load between masters</li>
+<li>Slaves are always shared between masters. Offline or disconnect a slave will un-share it</li>
+<li>Gearman jobs can start a jenkins build</li>
+<li>Gearman jobs can stop or abort a jenkins build</li>
+<li>Gearman jobs can change a build description</li>
+<li>Gearman jobs can pass in parameters to jenkins builds</li>
+<li>Gearman jobs can automatically set a slave to offline after running a build</li>
+<li>Gearman plugin is aware of Jenkins project status: meaning that gearman will register/unregister projects when the project is enabled or disabled.</li>
+<li>Gearman plugin is aware of slave status: meaning that gearman will register/unregister slaves when a slave is set online/offline and connected/disconnected.</li>
+</ul>
+<h6>Jenkins Master集群化的好处</h6>
+<ul>
+<li>水平扩展</li>
+<li>冗余、稳定性</li>
+<li>弹性Node</li>
+</ul>
+<h5>水平扩展</h5>
+<p><img alt="horizontal scaling" src="http://docs.openstack.org/infra/publications/gearman-plugin/images/gearman_plugin_architecture2.png" /></p>
+<h5>Jenkins集群化（冗余）</h5>
+<p><img alt="redundant jenkins" src="/images/ci/openstack-ci-case/gearman-flow1.png" /></p>
+<h5>Gearman-Jenkins集成</h5>
+<p><img alt="Gearman-Jenkins Integration" src="/images/ci/openstack-ci-case/gearman-flow3.png" /></p>
+<p><img alt="Jenkins Buildables as Gearman Functions" src="http://docs.openstack.org/infra/publications/gearman-plugin/images/gearman-flow4.png" />
+Meta-jobs：</p>
+<ul>
+<li>stop job</li>
+<li>set description</li>
+</ul>
+<h4>工具集成</h4>
+<p>Bug Integration - Launchpad</p>
+<h4>测试分类</h4>
+<h5>代码风格检测</h5>
+<h5>Unit tests</h5>
+<ol>
+<li>测试代码</li>
+<li>快速失败</li>
+<li>开发者易于执行，可在虚拟环境中执行</li>
+</ol>
+<h5>Functional tests</h5>
+<ol>
+<li>测试服务功能</li>
+<li>开发者易于执行</li>
+</ol>
+<h5>Integration tests</h5>
+<ol>
+<li>测试系统</li>
+<li>在真实环境中测试</li>
+<li>执行耗时</li>
+</ol>
+<p>其他：
+Test Repository 框架，实现并行测试
+Zuul可以实现测试并行执行，又能保持测试顺序不变</p>
+<p>一个Jenkins master带100个slave之后就会遇到问题</p>
+<p>自动化解决的问题不是今天的问题，而是三个月之后的问题。</p>
+<h4>Devstack-Gate</h4>
+<p>开发者工具，结合云
+http://docs.openstack.org/infra/publications/devstack-tutorial/</p>
+<p>Git Review</p>
+<h4>日志管理</h4>
+<p><img alt="日志管理架构" src="http://docs.openstack.org/infra/publications/overview/images/logstash-diagram-small.png" /></p>
+<p>Design</p>
+<ul>
+<li>Jenkins ZeroMQ Event Publisher</li>
+<li>Gearman, process logs in batches one job per file</li>
+<li>Filter extensively</li>
+</ul>
+<h3>相关资料</h3>
+<ol>
+<li><a href="http://docs.openstack.org/infra/publications/overview">Scaling OpenStack Development: Continuous Integration Overview</a></li>
+<li><a href="http://docs.openstack.org/infra/publications/zuul">How OpenStack Improves Code Quality with Project Gating and Zuul</a></li>
+<li><a href="http://docs.openstack.org/infra/publications/ci-automation">Continuous integration automation: An outline of OpenStack CI components</a></li>
+<li><a href="http://docs.openstack.org/infra/publications/jenkins-job-builder">Scaling Your Jenkins Jobs：Jenkins Job Builder</a></li>
+<li><a href="http://docs.openstack.org/infra/publications/gearman-plugin">Multiple Jenkins Masters：with Jenkins Gearman Plugin</a></li>
+<li><a href="http://www.infoq.com/cn/articles/interview-openstack-ci-test-automation">Interview-openstack-ci-test-automation</a></li>
+<li><a href="http://docs.openstack.org/infra/publications/processing-ci-log-events">Processing-ci-log-events</a></li>
+</ol>
 
 		    <div class="tags">
 		        <p>tags: <a href="/tag/chi-xu-ji-cheng.html">持续集成</a><a href="/tag/openstack.html">OpenStack</a><a href="/tag/gerrit.html">Gerrit</a><a href="/tag/jenkins.html">Jenkins</a></p>
@@ -223,6 +848,7 @@
 					    <li class="active"><a href="/category/chi-xu-ji-cheng.html">持续集成</a></li>
 					    <li><a href="/category/devops.html">DevOps</a></li>
 					    <li><a href="/category/du-shu-bi-ji.html">读书笔记</a></li>
+					    <li><a href="/category/linux.html">Linux</a></li>
 					    <li><a href="/category/min-jie.html">敏捷</a></li>
 					    <li><a href="/category/za-wen.html">杂文</a></li>
 				</ul>
@@ -243,8 +869,10 @@
 				    <a href="/tag/feng-huang-xiang-mu.html">凤凰项目</a>
 				    <a href="/tag/gerrit.html">Gerrit</a>
 				    <a href="/tag/gong-cheng-shi-wen-hua.html">工程师文化</a>
+				    <a href="/tag/huan-jing-bian-liang.html">环境变量</a>
 				    <a href="/tag/jenkins.html">Jenkins</a>
 				    <a href="/tag/ji-zhu.html">技术</a>
+				    <a href="/tag/linux.html">Linux</a>
 				    <a href="/tag/martin-fowler.html">Martin Fowler</a>
 				    <a href="/tag/openstack.html">OpenStack</a>
 				    <a href="/tag/pelican.html">Pelican</a>
@@ -252,6 +880,7 @@
 				    <a href="/tag/ren-sheng.html">人生</a>
 				    <a href="/tag/scrum.html">Scrum</a>
 				    <a href="/tag/travis.html">Travis</a>
+				    <a href="/tag/ubuntu.html">Ubuntu</a>
 				    <a href="/tag/wen-hua.html">文化</a>
 				    <a href="/tag/yun-ji-suan.html">云计算</a>
 				    <a href="/tag/zhan-li-hui-yi.html">站立会议</a>
